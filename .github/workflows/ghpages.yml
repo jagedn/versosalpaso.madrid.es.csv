@@ -23,18 +23,11 @@ jobs:
     steps:
       - name: Environment
         run: env | sort
-      - uses: sdkman/sdkman-action@v1
-        id: sdkmanjava
-        with:
-          candidate: java
-          version: 17.0.5-tem
-      - uses: sdkman/sdkman-action@v1
-        id: sdkmangroovy
-        with:
-          candidate: groovy
-          version: 4.0.11
-      - run: java -version
-      - uses: actions/checkout@v4
+      - name: Checkout Repo
+        uses: actions/checkout@v4
+      - name: setup java
+        uses: sfesenko/setup-sdkman@v1
+          deps: java:17.0.5-tem  groovy:4.0.11
       - name: Generate
         run: groovy generateJson.groovy
       - name: Upload artifact

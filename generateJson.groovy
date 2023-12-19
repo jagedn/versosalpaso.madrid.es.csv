@@ -13,10 +13,11 @@ Map toMap(String[] fields){
     ]
 }
 
+url = "https://jagedn.github.io/versosalpaso.madrid.es.csv/versos"
 
 file = new File("versosalpaso.csv")
 
-dataDir = new File("data")
+dataDir = new File("public")
 dataDir.mkdirs()
 
 byId = new File(dataDir, "versos")
@@ -35,7 +36,10 @@ all.sort{it.id as int}
 all.each {
     new File(byId, "${it.id}.json").text = JsonOutput.prettyPrint(JsonOutput.toJson(it))
 }
-new File(dataDir,"ids.json").text = JsonOutput.prettyPrint(JsonOutput.toJson(all*.id))
+
+new File(dataDir,"ids.json").text = JsonOutput.prettyPrint(JsonOutput.toJson(all.collect{
+    [ id:"${it.key}", url: "$url/${it.key}.json"]
+}))
 
 
 authors = all.inject([:],{map, entry->
@@ -45,7 +49,8 @@ authors = all.inject([:],{map, entry->
     map
 })
 new File(dataDir,"auths.json").text = JsonOutput.prettyPrint(JsonOutput.toJson(authors.collect{
-    [ id:"${it.key}", versos: it.value*.id]
+    def list = it.value.collect{[ id:"${it.id}", url: "$url/${it.id}.json", verso:it.verso]}
+    [ id:"${it.key}", versos: list]
 }))
 
 barrios = all.inject([:],{map, entry->
@@ -55,5 +60,6 @@ barrios = all.inject([:],{map, entry->
     map
 })
 new File(dataDir,"barrios.json").text = JsonOutput.prettyPrint(JsonOutput.toJson(barrios.collect{
-    [ id:"${it.key}", versos: it.value*.id]
+    def list = it.value.collect{[ id:"${it.id}", url: "$url/${it.id}.json", verso:it.verso]}
+    [ id:"${it.key}", versos: list]
 }))

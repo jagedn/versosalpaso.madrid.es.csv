@@ -24,12 +24,12 @@ jobs:
       - name: Environment
         run: env | sort
       - uses: sdkman/sdkman-action@v1
-        id: sdkman
+        id: sdkmanjava
         with:
           candidate: java
           version: 17.0.5-tem
       - uses: sdkman/sdkman-action@v1
-        id: sdkman
+        id: sdkmangroovy
         with:
           candidate: groovy
           version: 4.0.11

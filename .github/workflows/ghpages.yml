@@ -1,0 +1,54 @@
+name: ghpages
+on:
+  push:
+    branches:
+      - 'main'
+
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+jobs:
+  build:
+    name: Build json
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - name: Environment
+        run: env | sort
+      - uses: sdkman/sdkman-action@v1
+        id: sdkman
+        with:
+          candidate: java
+          version: 17.0.5-tem
+      - uses: sdkman/sdkman-action@v1
+        id: sdkman
+        with:
+          candidate: groovy
+          version: 4.0.11
+      - run: java -version
+      - uses: actions/checkout@v4
+      - name: Generate
+        run: groovy generateJson.groovy
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v2
+        with:
+          path: ./data
+
+  publish-ghpages:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v2

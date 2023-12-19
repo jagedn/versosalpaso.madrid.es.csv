@@ -38,7 +38,7 @@ all.each {
 }
 
 new File(dataDir,"ids.json").text = JsonOutput.prettyPrint(JsonOutput.toJson(all.collect{
-    [ id:"${it.key}", url: "$url/${it.key}.json"]
+    [ id:"${it.id}", url: "$url/${it.id}.json"]
 }))
 
 
@@ -63,3 +63,7 @@ new File(dataDir,"barrios.json").text = JsonOutput.prettyPrint(JsonOutput.toJson
     def list = it.value.collect{[ id:"${it.id}", url: "$url/${it.id}.json", verso:it.verso]}
     [ id:"${it.key}", versos: list]
 }))
+
+println "Total versos "+all.size()
+println "Total autores "+authors.size()
+println "Total barrios "+barrios.size()
